@@ -41,6 +41,7 @@
     audio.src = p === 2 ? c.audio2 : c.audio;
     audio.playbackRate = +$('#toc').value;
     [...ds.children].forEach((li, n) => li.classList.toggle('dang', n === i));
+    document.querySelectorAll('.canh-kb').forEach((card, n) => card.classList.toggle('dang', n === i));
     $('#dung div').textContent = c.dung || '—';
     $('#phu-de').textContent = '';
     if (chay) audio.play();
@@ -113,6 +114,57 @@
     if (e.code === 'ArrowRight') $('#toi').onclick();
     if (e.code === 'ArrowLeft') $('#lui').onclick();
   });
+
+  window.playerNap = (k) => {
+    daBatDau = true;
+    const btn = $('#bat-dau');
+    if (btn) btn.hidden = true;
+    nap(k, 1, true);
+    const card = document.getElementById(`kb-canh-${k}`);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
+  window.copyCanh = (k, btn) => {
+    const card = document.getElementById(`kb-canh-${k}`);
+    if (!card) return;
+    const tieuDe = card.querySelector('h3') ? card.querySelector('h3').innerText.trim() : '';
+    const tg = card.querySelector('.canh-tg') ? card.querySelector('.canh-tg').innerText.trim() : '';
+    const thoai = card.querySelector('.kb-thoai') ? card.querySelector('.kb-thoai').innerText.trim() : '';
+    const dung = card.querySelector('.kb-dung') ? card.querySelector('.kb-dung').innerText.trim() : '';
+
+    let text = `## [${tg}] ${tieuDe}\n\n${thoai}`;
+    if (dung) text += `\n\n> ${dung}`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      const old = btn.textContent;
+      btn.textContent = '✓ Đã chép!';
+      btn.style.color = '#2F855A';
+      setTimeout(() => { btn.textContent = old; btn.style.color = ''; }, 1500);
+    });
+  };
+
+  const btnAll = document.getElementById('btn-copy-toan-bo');
+  if (btnAll) {
+    btnAll.onclick = () => {
+      const cards = document.querySelectorAll('.canh-kb');
+      const lines = [`# ${D.ma} · ${D.tieu_de}\n`];
+      cards.forEach(card => {
+        const tieuDe = card.querySelector('h3') ? card.querySelector('h3').innerText.trim() : '';
+        const tg = card.querySelector('.canh-tg') ? card.querySelector('.canh-tg').innerText.trim() : '';
+        const thoai = card.querySelector('.kb-thoai') ? card.querySelector('.kb-thoai').innerText.trim() : '';
+        const dung = card.querySelector('.kb-dung') ? card.querySelector('.kb-dung').innerText.trim() : '';
+        lines.push(`### [${tg}] ${tieuDe}\n\n${thoai}`);
+        if (dung) lines.push(`\n> ${dung}`);
+        lines.push('\n---\n');
+      });
+      navigator.clipboard.writeText(lines.join('\n')).then(() => {
+        const old = btnAll.textContent;
+        btnAll.textContent = '✓ Đã chép toàn bộ!';
+        btnAll.style.background = '#2F855A';
+        setTimeout(() => { btnAll.textContent = old; btnAll.style.background = ''; }, 2000);
+      });
+    };
+  }
 
   nap(0, 1, false);
   requestAnimationFrame(nhip);
