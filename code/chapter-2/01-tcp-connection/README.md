@@ -3,7 +3,6 @@
 Mã chạy được của phần “TCP: kết nối giữa client và server”. Mọi đoạn mã trên slide trích từ thư mục này; mọi kết quả chạy trên
 slide lấy từ `results/` (output thật, không gõ lại).
 
-
 **Môi trường:** JDK 21 (Temurin 21.0.12), Windows 11. Không cần Maven hay thư viện ngoài.
 
 ```bash
